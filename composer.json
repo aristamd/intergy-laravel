@@ -1,0 +1,13 @@
+{
+    "name": "aristamd/intergy-laravel",
+    "description": "Library to bridge laravel with Intergy's API.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luis Diego Cordero H",
+            "email": "lcordero@wearegap.com"
+        }
+    ],
+    "require": {}
+}
