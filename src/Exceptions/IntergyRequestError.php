@@ -1,4 +1,4 @@
-<?php namespace Core\Exceptions\Intergy;
+<?php namespace Intergy\Exceptions;
 
 class IntergyRequestError extends \Exception
 {
