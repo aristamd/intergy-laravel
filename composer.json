@@ -1,5 +1,5 @@
 {
-    "name": "aristamd/intergy-laravel",
+    "name": "intergy-laravel",
     "type": "library",
     "description": "This library will bridge for Laravel and Intergy's API",
     "keywords": [
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Intergy\\": "src/"
+            "Intergy-Laravel\\": "src/"
         }
     }
 }
