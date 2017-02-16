@@ -2,7 +2,7 @@
     "name": "aristamd/intergy-laravel",
     "autoload": {
         "psr-0": {
-            "Aristamd\\Intergy\\": "src/"
+            "Intergy": "src/"
         }
     }
 }
