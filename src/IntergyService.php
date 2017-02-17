@@ -11,7 +11,7 @@
 
 namespace Intergy;
 
-use Intergy/Storage/AbstractStorage;
+use Intergy\Storage\AbstractStorage;
 
 /**
  * This is the authorizer class.
@@ -25,6 +25,13 @@ class IntergyService
      *
      * @var bool|null
      */
+    protected $config = null;
+
+    /**
+     * The redirect uri generator.
+     *
+     * @var bool|null
+     */
     protected $patientStorage = null;
 
     /**
@@ -33,12 +40,22 @@ class IntergyService
      * @param \League\OAuth2\Server\AuthorizationServer $issuer
      * @param \League\OAuth2\Server\ResourceServer $checker
      */
-    public function __construct()
+    public function __construct( $config )
     {
-        //$this->patientStorage = new AbstractStorage();
+        $this->config = $config;
+    }
+
+    public function setPatientStorage( $patientStorage )
+    {
+        $this->patientStorage = $patientStorage;
+    }
+
+    public function getPatientStorage()
+    {
+        return $this->patientStorage;
     }
 
     public function test(){
-        return test;
+        return 'test';
     }
 }

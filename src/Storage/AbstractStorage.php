@@ -1,12 +1,12 @@
-<?php namespace App\Services\Repositories;
+<?php namespace Intergy\Storage;
 
 use GuzzleHttp\Exception\RequestException;
 use Log;
 use \Exception;
 use Cache;
-use App\Exceptions\MissingParameterException;
-use App\Exceptions\Intergy\IntergyRequestError;
-use App\Exceptions\Intergy\IntergyLogonError;
+use Intergy\Exceptions\MissingParameterException;
+use Intergy\Exceptions\IntergyRequestError;
+use Intergy\Exceptions\IntergyLogonError;
 
 /**
  * Class Intergy Repository
@@ -45,18 +45,28 @@ class AbstractStorage
      *  Function that initializes the info required by the request to Intergy's API
      * @return void
      */
-    public function __construct()
+    public function __construct( $config )
     {
         // We load the configurations to connect to Health Language
-        $this->baseUrl = env( 'INTERGY_URL' );
-        $this->token = env( 'INTERGY_TOKEN' );
-        $this->username = env( 'INTERGY_USERNAME' );
-        $this->password = env( 'INTERGY_PASSWORD' );
-        $this->applicationName = env( 'INTERGY_APPLICATION_NAME' );
-        $this->licenseId = env( 'INTERGY_LICENSE_ID' );
-        $this->userLogon = env( 'INTERGY_USER_LOGON' );
+        $this->setConfig( $config );
         // We initializate the session with Intergy
         $this->initSession();
+    }
+
+    /**
+     *  Function that initializes the info required by the request to Intergy's API
+     * @return void
+     */
+    public function setConfig( $config )
+    {
+        // We load the configurations to connect to Health Language
+        $this->baseUrl = $config[ 'INTERGY_URL' ];
+        $this->token = $config[ 'INTERGY_TOKEN' ];
+        $this->username = $config[ 'INTERGY_USERNAME' ];
+        $this->password = $config[ 'INTERGY_PASSWORD' ];
+        $this->applicationName = $config[ 'INTERGY_APPLICATION_NAME' ];
+        $this->licenseId = $config[ 'INTERGY_LICENSE_ID' ];
+        $this->userLogon = $config[ 'INTERGY_USER_LOGON' ];
     }
 
     /**
@@ -65,7 +75,7 @@ class AbstractStorage
      * @param   String  $pathName   Name of the route we want to access on Intergy
      * @return  String              Url to the Intergy's endpoint
      */
-    private function getUrl( $pathName )
+    protected function getUrl( $pathName )
     {
         $path = null;
         // Select the endpoint path based on name
@@ -97,7 +107,7 @@ class AbstractStorage
      * @param   Object  $response   Response Object returned by Intergy API
      * @return                      Could return an Error in case session is invalid.
      */
-    private function checkLogonError( $response )
+    protected function checkLogonError( $response )
     {
         // We check if it is a logon error
         if( !empty($response) && !empty($response->ErrorCode) && $response->ErrorCode === INTERGY_LOGON_ERROR_CODE )
@@ -116,7 +126,7 @@ class AbstractStorage
      * @param   Object  $requestData    Request object that contains required headers and data
      * @return                          Return an object that contains the endpoint response.
      */
-    private function callAPI( $method, $url, $requestData, $retryIntent=0 )
+    protected function callAPI( $method, $url, $requestData, $retryIntent=0 )
     {
         try
         {
@@ -137,7 +147,7 @@ class AbstractStorage
             );
 
             // Returns the response
-            $response = $apiRequest->getBody();
+            $response = json_decode( $apiRequest->getBody()->getContents() );
 
             // Check if there is an logon error
             $this->checkLogonError( $response );
@@ -221,8 +231,7 @@ class AbstractStorage
             // Send the request to the endpoint
             $response = $this->callAPI( 'POST', $uri,$queryData );
 
-            // Decode and return the response
-            return json_decode( $response );
+            return $response;
         }
         catch ( RequestException $re )
         {
@@ -268,8 +277,7 @@ class AbstractStorage
             // Calls to the endpoint
             $response = $this->callAPI( 'POST', $uri, $queryData );
 
-            // Decode the response
-            return json_decode( $response );
+            return $response;
         }
         catch ( RequestException $re )
         {
@@ -292,7 +300,7 @@ class AbstractStorage
      * @param   Integer     $practiceId   Id of the practice you want to access
      * @return  void
      */
-    private function logonToPractice( $practiceId, $userId, $licenseId, $sessionId, $userLogon, $applicationName )
+    protected function logonToPractice( $practiceId, $userId, $licenseId, $sessionId, $userLogon, $applicationName )
     {
         // Get the endpoint url
         $uri = $this->getUrl( 'practice-logon' );
@@ -321,43 +329,6 @@ class AbstractStorage
         }
 
         return $this->praticeIds[0];
-    }
-
-    /**
-     * Search for a patient using the patientId into a specific practice
-     *
-     * @param   Integer     $patientId      Id of the patient we want to find.
-     * @param   Integer     $practiceId     Id of the practice we want to search
-     * @return  Object                      List of patients that matches with the search
-     */
-    public function searchPatient( $patientId, $practiceId=null )
-    {
-        // Get the pactice Id in case we haven't received one
-        if( empty($practiceId) )
-        {
-            $practiceId = $this->getDefaultPractice();
-        }
-
-        // We need to be logged into the practice we want to search
-        $this->logonToPractice( $practiceId, $this->userId, $this->licenseId, $this->sessionId, $this->userLogon, $this->applicationName );
-        
-        // Get Url to the search patient endpoint
-        $uri = $this->getUrl( 'patient-search' );
-
-        // Create a Request
-        $queryData = [
-            'Credential' => [
-                "LicenseID" => $this->licenseId,
-                "SessionID" => $this->sessionId,
-                "UserLogon" => $this->userLogon,
-                "ApplicationName" => $this->applicationName,
-                "UserMachineName" => "",
-            ],
-            "PatientNumber" => $patientId
-        ];
-
-        // Send the request to the server and wait for the response
-        return $this->callAPI( 'POST', $uri, $queryData );
     }
 
     /**
@@ -460,7 +431,7 @@ class AbstractStorage
      * @param   Boolean     $forceToRefresh     Value that idicates if we need to force to create a new session
      * @return  void
      */
-    private function initSession( $forceToRefresh=false )
+    protected function initSession( $forceToRefresh=false )
     {
         // Checks if we have this query result on cache and return it
         if( !$forceToRefresh &&
