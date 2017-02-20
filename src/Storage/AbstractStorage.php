@@ -322,12 +322,12 @@ abstract class AbstractStorage
 
     protected function getDefaultPractice()
     {
-        if( empty($this->praticeIds) || sizeof($this->praticeIds) == 0 )
+        if( empty($this->practiceIds) || sizeof($this->practiceIds) == 0 )
         {
             throw new IntergyRequestError( "There are not registered practices for the user" );
         }
 
-        return $this->praticeIds[0];
+        return $this->practiceIds[0];
     }
 
     /**
@@ -469,6 +469,6 @@ abstract class AbstractStorage
         $this->practiceIds = $this->getPracticeIds( $response );
 
         // Saves the result into cache
-        Cache::put( self::INTERGY_CACHE_PRACTICE_ID_KEY, $this->userId, self::INTERGY_CACHE_LIFE );
+        Cache::put( self::INTERGY_CACHE_PRACTICE_ID_KEY, $this->practiceIds, self::INTERGY_CACHE_LIFE );
     }
 }
