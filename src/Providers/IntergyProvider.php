@@ -25,7 +25,7 @@ class IntergyProvider extends ServiceProvider
      */
     protected function setupConfig(Application $app)
     {
-        $source = realpath(__DIR__.'/../config/intergy.php');
+        $source = config_path('intergy.php');
 
         $this->mergeConfigFrom($source, 'intergy');
     }
