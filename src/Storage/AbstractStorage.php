@@ -320,7 +320,7 @@ abstract class AbstractStorage
         $this->callAPI( 'POST', $uri, $queryData );
     }
 
-    private function getDefaultPractice()
+    protected function getDefaultPractice()
     {
         if( empty($this->praticeIds) || sizeof($this->praticeIds) == 0 )
         {
