@@ -1,61 +1,59 @@
 <?php
 
-/*
- * This file is part of OAuth 2.0 Laravel.
- *
- * (c) Luca Degasperi <packages@lucadegasperi.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Intergy;
 
 use Intergy\Storage\AbstractStorage;
 
 /**
- * This is the authorizer class.
- *
- * @author Luca Degasperi <packages@lucadegasperi.com>
+ * Class IntergyService
+ * This class contain the storage elements that will allow you access to the Intergy's API.
  */
 class IntergyService
 {
     /**
-     * The redirect uri generator.
+     * Object that contains Intergy's configuration.
      *
-     * @var bool|null
+     * @var Array|null
      */
     protected $config = null;
 
     /**
-     * The redirect uri generator.
+     * Repository to call Intergy's Patient info.
      *
-     * @var bool|null
+     * @var Storage|null
      */
     protected $patientStorage = null;
 
     /**
-     * Create a new Authorizer instance.
+     * Create a new Service Instance.
      *
-     * @param \League\OAuth2\Server\AuthorizationServer $issuer
-     * @param \League\OAuth2\Server\ResourceServer $checker
+     * @param   Array    $config    Array with the Intergy's configuration
+     * @return  void
      */
     public function __construct( $config )
     {
+        // Store the configuration
         $this->config = $config;
     }
 
+    /**
+     * Function to set a Patient Storage for the service.
+     *
+     * @param   Object  $patientStorage     Repository to access Patient's information from Intergy.
+     * @return  void
+     */
     public function setPatientStorage( $patientStorage )
     {
         $this->patientStorage = $patientStorage;
     }
 
+    /**
+     * Function to get a Patient Storage for the service.
+     *
+     * @return   Object     Repository to access Patient's information from Intergy.
+     */
     public function getPatientStorage()
     {
         return $this->patientStorage;
-    }
-
-    public function test(){
-        return 'test';
     }
 }

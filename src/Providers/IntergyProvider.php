@@ -7,13 +7,6 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 class IntergyProvider extends ServiceProvider
 {
     /**
-     * Indicates that we should not load this singleton until requested.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-        /**
      * Boot the service provider.
      *
      * @return void

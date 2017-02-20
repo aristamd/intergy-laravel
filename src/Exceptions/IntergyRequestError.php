@@ -1,9 +1,13 @@
 <?php namespace Intergy\Exceptions;
 
+/**
+ * Class IntergyRequestError
+ * This exception should be used to manage errors related with the requests sent to Intergy's API.
+ */
 class IntergyRequestError extends \Exception
 {
     /**
-     * Custom excepetion message when Health Language returns an error
+     * Custom excepetion message when Intergy's API returns an error
      * @param String $msg Authentication message
      */
     public function __construct( $msg )

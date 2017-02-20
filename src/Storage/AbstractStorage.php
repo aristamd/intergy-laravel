@@ -13,10 +13,9 @@ use Intergy\Exceptions\IntergyLogonError;
  * It is a wrapper for the restful api
  * @package App\Services\Repositories
  *
- * In this repository you will find functionality that will allow you to get information
- * information about a patient into the Intergys API.
+ * In this repository you will find base functionality that will allow you to do request to Intergy's API.
  */
-class AbstractStorage
+abstract class AbstractStorage
 {
     const AUTHENTICATE_USER = "AuthenticateUser";
     const PRACTICE_LIST = "AuthorizedPracticeListGet";

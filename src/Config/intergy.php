@@ -13,13 +13,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Output Token Type
+    | URL to the Intergy API
     |--------------------------------------------------------------------------
     |
-    | This will tell the authorization server the output format for the access
-    | token and the resource server how to parse the access token used.
-    |
-    | Default value is League\OAuth2\Server\TokenType\Bearer
+    | This is the url to the Intergy Service, used to do call the endpoints.
     |
     */
 
@@ -27,70 +24,68 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | State Parameter
+    | Account Token
     |--------------------------------------------------------------------------
     |
-    | Whether or not the state parameter is required in the query string.
+    | This is the token assigned to you account, required to access the Intergy API
     |
     */
 
-    'INTERGY_TOKEN' => 'puw7wx2s4bgkubjftf87dspy',
+    'INTERGY_TOKEN' => '',
 
     /*
     |--------------------------------------------------------------------------
-    | Scope Parameter
+    | Username
     |--------------------------------------------------------------------------
     |
-    | Whether or not the scope parameter is required in the query string.
+    | The username registered into Intergy's API.
     |
     */
 
-    'INTERGY_USERNAME' => 'API_AristaMD',
+    'INTERGY_USERNAME' => '',
 
     /*
     |--------------------------------------------------------------------------
-    | Scope Delimiter
+    | Password
     |--------------------------------------------------------------------------
     |
-    | Which character to use to split the scope parameter in the query string.
+    | Password registered for your the Intergy's account.
     |
     */
 
-    'INTERGY_PASSWORD' => 'password',
+    'INTERGY_PASSWORD' => '',
 
     /*
     |--------------------------------------------------------------------------
-    | Default Scope
+    | Application Name
     |--------------------------------------------------------------------------
     |
-    | The default scope to use if not present in the query string.
+    | Name assined to the application that will access the Intergy's API.
     |
     */
 
-    'INTERGY_APPLICATION_NAME' => "Intergy's Favorite 3rd Party Application",
+    'INTERGY_APPLICATION_NAME' => "",
 
     /*
     |--------------------------------------------------------------------------
-    | Access Token TTL
+    | License ID
     |--------------------------------------------------------------------------
     |
-    | For how long the issued access token is valid (in seconds) this can be
-    | also set on a per grant-type basis.
+    | License assigned to you for accessing the Intergy's API
     |
     */
 
-    'INTERGY_LICENSE_ID' => 'DevIntAPI',
+    'INTERGY_LICENSE_ID' => '',
 
     /*
     |--------------------------------------------------------------------------
-    | Limit clients to specific grants
+    | User Logon
     |--------------------------------------------------------------------------
     |
-    | Whether or not to limit clients to specific grant types. This is useful
-    | to allow only trusted clients to access your API differently.
+    | User to logon on Intergy's API
     |
     */
 
-    'INTERGY_USER_LOGON' => 'API_AristaMD'
+    'INTERGY_USER_LOGON' => ''
 
 ];
