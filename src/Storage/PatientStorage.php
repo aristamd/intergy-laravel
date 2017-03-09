@@ -66,7 +66,7 @@ class PatientStorage extends AbstractStorage
     public function findPatient( $patientId, $practiceId=null )
     {
         $patients = $this->searchPatient($patientId, $practiceId);
-        return $patients[0];
+        return ( !empty($patients) && count($patients) > 0 ) ? $patients[0] : null;
     }
 
     /**
