@@ -21,6 +21,7 @@ abstract class AbstractStorage
     const PRACTICE_LIST = "AuthorizedPracticeListGet";
     const PRACTICE_LOGON = "LogonUserToPractice";
     const PATIENT_SEARCH = "PatientSearch";
+    const PATIENT_SUMMARY = "PatientSummaryGet";
     const GROUPS_SEARCH = "/groups";
     const INTERGY_CACHE_LIFE = 200;
     const INTERGY_CACHE_SESSION_KEY = "intergy_session_id";
@@ -91,6 +92,9 @@ abstract class AbstractStorage
                 break;
             case 'patient-search':
                 $path = self::PATIENT_SEARCH;
+                break;
+            case 'patient-summary':
+                $path = self::PATIENT_SUMMARY;
                 break;
             default:
                 $path = self::AUTHENTICATE_USER;
