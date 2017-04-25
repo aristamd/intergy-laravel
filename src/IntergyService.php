@@ -25,6 +25,13 @@ class IntergyService
     protected $patientStorage = null;
 
     /**
+     * Repository to call Intergy's Notification info.
+     *
+     * @var Storage|null
+     */
+    protected $notificationStorage = null;
+
+    /**
      * Create a new Service Instance.
      *
      * @param   Array    $config    Array with the Intergy's configuration
@@ -56,4 +63,43 @@ class IntergyService
     {
         return $this->patientStorage;
     }
+
+    /**
+     * Function to set a Notification Storage for the service.
+     *
+     * @param   Object  $patientStorage     Repository to access Notification's information from Intergy.
+     * @return  void
+     */
+    public function setNotificationStorage( $notificationStorage )
+    {
+        $this->notificationStorage = $notificationStorage;
+    }
+
+    /**
+     * Function to get a Notification Storage for the service.
+     *
+     * @return   Object     Repository to access Notification's information from Intergy.
+     */
+    public function getNotificationStorage()
+    {
+        return $this->notificationStorage;
+    }
+
+    /**
+     * Search for a patient using the patientId into a specific practice
+     *
+     * @param   Integer     $providerId     Id of the user(provider) we want to notify.
+     * @param   String      $subject        Text we want to see in the subject of the notification
+     * @param   String      $subject        Text we will send as the notification's body
+     * @return  Integer                     TaskId returned by Intergy's Api
+     */
+    public function sendNotification( $providerId, $subject, $body)
+    {
+        // Get the repository to do querys for Intergy's Patients
+        $patientStorage = $this->getPatientStorage();
+        // Use the repository to get the patient's information
+        return $patientStorage->sendNotification( $providerId, $subject, $body );
+    }
+
+
 }

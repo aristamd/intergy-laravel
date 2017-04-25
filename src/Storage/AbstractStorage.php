@@ -22,6 +22,7 @@ abstract class AbstractStorage
     const PRACTICE_LOGON = "LogonUserToPractice";
     const PATIENT_SEARCH = "PatientSearch";
     const PATIENT_SUMMARY = "PatientSummaryGet";
+    const NOTIFICATION_TASK_CREATE = "NotificationTaskCreate";
     const GROUPS_SEARCH = "/groups";
     const INTERGY_CACHE_LIFE = 200;
     const INTERGY_CACHE_SESSION_KEY = "intergy_session_id";
@@ -95,6 +96,9 @@ abstract class AbstractStorage
                 break;
             case 'patient-summary':
                 $path = self::PATIENT_SUMMARY;
+                break;
+            case 'notification-task-create':
+                $path = self::NOTIFICATION_TASK_CREATE;
                 break;
             default:
                 $path = self::AUTHENTICATE_USER;
