@@ -34,6 +34,12 @@ class NotificationStorage extends AbstractStorage
             $practiceId = $this->getDefaultPractice();
         }
 
+        // We check that all the parameters has been provided
+        if( empty($providerId) || empty($subject) || empty($body) )
+        {
+            throw new MissingParameterException( __FUNCTION__ );
+        }
+
         // We need to be logged into the practice we want to search
         $this->logonToPractice( $practiceId, $this->userId, $this->licenseId, $this->sessionId, $this->userLogon, $this->applicationName );
         
@@ -49,9 +55,8 @@ class NotificationStorage extends AbstractStorage
                 "ApplicationName" => $this->applicationName,
                 "UserMachineName" => "",
             ],
-            "ToUserID" => $providerId,
             "ToProviderID" => $providerId,
-            "TaskType" => "Notification Task",
+            "TaskType" => "CLUPT",
             "Subject" => $subject,
             "Body" => $body
         ];

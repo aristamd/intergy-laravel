@@ -3,6 +3,7 @@
 namespace Intergy;
 
 use Intergy\Storage\AbstractStorage;
+use Intergy\Exceptions\MissingParameterException;
 
 /**
  * Class IntergyService
@@ -96,9 +97,15 @@ class IntergyService
     public function sendNotification( $providerId, $subject, $body)
     {
         // Get the repository to do querys for Intergy's Patients
-        $patientStorage = $this->getPatientStorage();
+        $notificationStorage = $this->getNotificationStorage();
+
+        if( empty($notificationStorage) )
+        {
+            throw new MissingParameterException( __FUNCTION__ );
+        }
+
         // Use the repository to get the patient's information
-        return $patientStorage->sendNotification( $providerId, $subject, $body );
+        return $notificationStorage->sendNotification( $providerId, $subject, $body );
     }
 
 
