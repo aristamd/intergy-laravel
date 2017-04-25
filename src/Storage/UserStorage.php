@@ -53,7 +53,8 @@ class UserStorage extends AbstractStorage
 
         // Send the request to the server and wait for the response
         $response = $this->callAPI( 'POST', $uri, $queryData );
-        return $this->getUsersFromResult( $response );
+        $users = $this->getUsersFromResult( $response );
+        return $users;
     }
 
     /**

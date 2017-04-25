@@ -50,7 +50,7 @@ class IntergyProvider extends ServiceProvider
             $client->setNotificationStorage( $notificationStorage );
 
             $userStorage = new \Intergy\Storage\UserStorage( $config );
-            $client->setUserStorage( $notificationStorage );
+            $client->setUserStorage( $userStorage );
 
             return $client;
         });
