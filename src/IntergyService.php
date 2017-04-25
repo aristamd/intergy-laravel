@@ -3,6 +3,7 @@
 namespace Intergy;
 
 use Intergy\Storage\AbstractStorage;
+use Intergy\Exceptions\MissingParameterException;
 
 /**
  * Class IntergyService
@@ -23,6 +24,20 @@ class IntergyService
      * @var Storage|null
      */
     protected $patientStorage = null;
+
+    /**
+     * Repository to call Intergy's Notification info.
+     *
+     * @var Storage|null
+     */
+    protected $notificationStorage = null;
+
+    /**
+     * Repository to call Intergy's User info.
+     *
+     * @var Storage|null
+     */
+    protected $userStorage = null;
 
     /**
      * Create a new Service Instance.
@@ -55,5 +70,69 @@ class IntergyService
     public function getPatientStorage()
     {
         return $this->patientStorage;
+    }
+
+    /**
+     * Function to set a Notification Storage for the service.
+     *
+     * @param   Object  $patientStorage     Repository to access Notification's information from Intergy.
+     * @return  void
+     */
+    public function setNotificationStorage( $notificationStorage )
+    {
+        $this->notificationStorage = $notificationStorage;
+    }
+
+    /**
+     * Function to get a Notification Storage for the service.
+     *
+     * @return   Object     Repository to access Notification's information from Intergy.
+     */
+    public function getNotificationStorage()
+    {
+        return $this->notificationStorage;
+    }
+
+    /**
+     * Search for a patient using the patientId into a specific practice
+     *
+     * @param   Integer     $userId         Id of the user(provider) we want to notify.
+     * @param   String      $subject        Text we want to see in the subject of the notification
+     * @param   String      $subject        Text we will send as the notification's body
+     * @return  Integer                     TaskId returned by Intergy's Api
+     */
+    public function sendNotification( $userId, $subject, $body)
+    {
+        // Get the repository to do querys for Intergy's Patients
+        $notificationStorage = $this->getNotificationStorage();
+
+        if( empty($notificationStorage) )
+        {
+            throw new MissingParameterException( __FUNCTION__ );
+        }
+
+        // Use the repository to get the patient's information
+        return $notificationStorage->sendNotification( $userId, $subject, $body );
+    }
+
+    /**
+     * Function to set a Notification Storage for the service.
+     *
+     * @param   Object  $patientStorage     Repository to access User's information from Intergy.
+     * @return  void
+     */
+    public function setUserStorage( $userStorage )
+    {
+        $this->userStorage = $userStorage;
+    }
+
+    /**
+     * Function to get a Notification Storage for the service.
+     *
+     * @return   Object     Repository to access User's information from Intergy.
+     */
+    public function getUserStorage()
+    {
+        return $this->userStorage;
     }
 }

@@ -46,6 +46,12 @@ class IntergyProvider extends ServiceProvider
             $patientStorage = new \Intergy\Storage\PatientStorage( $config );
             $client->setPatientStorage( $patientStorage );
 
+            $notificationStorage = new \Intergy\Storage\NotificationStorage( $config );
+            $client->setNotificationStorage( $notificationStorage );
+
+            $userStorage = new \Intergy\Storage\UserStorage( $config );
+            $client->setUserStorage( $userStorage );
+
             return $client;
         });
     }
