@@ -33,6 +33,13 @@ class IntergyService
     protected $notificationStorage = null;
 
     /**
+     * Repository to call Intergy's User info.
+     *
+     * @var Storage|null
+     */
+    protected $userStorage = null;
+
+    /**
      * Create a new Service Instance.
      *
      * @param   Array    $config    Array with the Intergy's configuration
@@ -89,12 +96,12 @@ class IntergyService
     /**
      * Search for a patient using the patientId into a specific practice
      *
-     * @param   Integer     $providerId     Id of the user(provider) we want to notify.
+     * @param   Integer     $userId         Id of the user(provider) we want to notify.
      * @param   String      $subject        Text we want to see in the subject of the notification
      * @param   String      $subject        Text we will send as the notification's body
      * @return  Integer                     TaskId returned by Intergy's Api
      */
-    public function sendNotification( $providerId, $subject, $body)
+    public function sendNotification( $userId, $subject, $body)
     {
         // Get the repository to do querys for Intergy's Patients
         $notificationStorage = $this->getNotificationStorage();
@@ -105,8 +112,27 @@ class IntergyService
         }
 
         // Use the repository to get the patient's information
-        return $notificationStorage->sendNotification( $providerId, $subject, $body );
+        return $notificationStorage->sendNotification( $userId, $subject, $body );
     }
 
+    /**
+     * Function to set a Notification Storage for the service.
+     *
+     * @param   Object  $patientStorage     Repository to access User's information from Intergy.
+     * @return  void
+     */
+    public function setUserStorage( $userStorage )
+    {
+        $this->userStorage = $userStorage;
+    }
 
+    /**
+     * Function to get a Notification Storage for the service.
+     *
+     * @return   Object     Repository to access User's information from Intergy.
+     */
+    public function getUserStorage()
+    {
+        return $this->userStorage;
+    }
 }

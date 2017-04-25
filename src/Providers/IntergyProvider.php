@@ -49,6 +49,9 @@ class IntergyProvider extends ServiceProvider
             $notificationStorage = new \Intergy\Storage\NotificationStorage( $config );
             $client->setNotificationStorage( $notificationStorage );
 
+            $userStorage = new \Intergy\Storage\UserStorage( $config );
+            $client->setUserStorage( $notificationStorage );
+
             return $client;
         });
     }

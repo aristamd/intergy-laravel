@@ -26,7 +26,7 @@ class NotificationStorage extends AbstractStorage
      * @param   String      $subject        Text we will send as the notification's body
      * @return  Integer                     TaskId returned by Intergy's Api
      */
-    public function sendNotification( $providerId, $subject, $body)
+    public function sendNotification( $userId, $subject, $body, $practiceId=null )
     {
         // Get the pactice Id in case we haven't received one
         if( empty($practiceId) )
@@ -35,7 +35,7 @@ class NotificationStorage extends AbstractStorage
         }
 
         // We check that all the parameters has been provided
-        if( empty($providerId) || empty($subject) || empty($body) )
+        if( empty($userId) || empty($subject) || empty($body) )
         {
             throw new MissingParameterException( __FUNCTION__ );
         }
@@ -55,7 +55,7 @@ class NotificationStorage extends AbstractStorage
                 "ApplicationName" => $this->applicationName,
                 "UserMachineName" => "",
             ],
-            "ToProviderID" => $providerId,
+            "ToUserID" => $userId,
             "TaskType" => "CLUPT",
             "Subject" => $subject,
             "Body" => $body
