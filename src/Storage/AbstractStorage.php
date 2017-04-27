@@ -25,6 +25,8 @@ abstract class AbstractStorage
     const NOTIFICATION_TASK_CREATE = "NotificationTaskCreate";
     const USER_LIST_GET = "UserListGet";
     const LOGOFF = "LogoffUser";
+    const TASK_TYPE_LIST = "TaskTypeListGet";
+    const SITE_VERSION = "SiteVersionGet";
     const GROUPS_SEARCH = "/groups";
     const INTERGY_CACHE_LIFE = 200;
     const INTERGY_CACHE_SESSION_KEY = "intergy_session_id";
@@ -108,6 +110,12 @@ abstract class AbstractStorage
                 break;
             case 'logoff':
                 $path = self::LOGOFF;
+                break;
+            case 'task-type-list':
+                $path = self::TASK_TYPE_LIST;
+                break;
+            case 'site-version':
+                $path = self::SITE_VERSION;
                 break;
             default:
                 $path = self::AUTHENTICATE_USER;
@@ -392,6 +400,32 @@ abstract class AbstractStorage
         $this->callAPI( 'POST', $uri, $queryData );
     }
 
+    /**
+     * Links the session with a specific Practice
+     *
+     * @param   Integer     $practiceId   Id of the practice you want to access
+     * @return  void
+     */
+    public function getSiteVersion()
+    {
+        // Get the endpoint url
+        $uri = $this->getUrl( 'site-version' );
+        // Creates the request
+        $queryData = [
+            'Credential' => [
+                "LicenseID" => $this->licenseId,
+                "SessionID" => $this->sessionId,
+                "UserLogon" => $this->userLogon,
+                "ApplicationName" => $this->applicationName,
+                "UserMachineName" => "",
+            ]
+        ];
+
+        // Send the request to the API
+        $response = $this->callAPI( 'POST', $uri, $queryData );
+        return $this->getVersion( $response );
+    }
+
     protected function getDefaultPractice()
     {
         if( empty($this->practiceIds) || sizeof($this->practiceIds) == 0 )
@@ -518,6 +552,30 @@ abstract class AbstractStorage
 
         // Return of practice ids
         return $ids;
+    }
+
+    /**
+     * Extract a list of Practice Ids from API response
+     *
+     * @param   Object  $respose    Response received from server that contains the list of practices
+     * @return  Array               Array of practices Ids
+     */
+    private function getVersion( $response )
+    {
+        // Check the parameters
+        if( empty($response) )
+        {
+            throw new MissingParameterException( __FUNCTION__ );
+        }
+
+        // Checks if there is an error
+        if( !empty($response->ErrorCode) )
+        {
+            throw new IntergyRequestError( $response->ErrorMessage );
+        }
+
+        // Get Site Version
+        return $response->Version;
     }
 
     /**

@@ -1,4 +1,4 @@
-<?php namespace Core\Exceptions;
+<?php namespace Intergy\Exceptions;
 
 /**
  * Class IntergyLogonError

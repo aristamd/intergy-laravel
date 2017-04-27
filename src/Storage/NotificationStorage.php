@@ -4,7 +4,7 @@ use GuzzleHttp\Exception\RequestException;
 use Log;
 use \Exception;
 use Cache;
-use Intergy\Exceptions\MissingParameterException;
+use Intergy\Exceptions\IntergyMissingParameterException;
 use Intergy\Exceptions\IntergyRequestError;
 use Intergy\Exceptions\IntergyLogonError;
 
@@ -80,12 +80,6 @@ class NotificationStorage extends AbstractStorage
         if( empty($practiceId) )
         {
             $practiceId = $this->getDefaultPractice();
-        }
-
-        // We check that all the parameters has been provided
-        if( empty($userId) || empty($subject) || empty($body) )
-        {
-            throw new MissingParameterException( __FUNCTION__ );
         }
 
         // We need to be logged into the practice we want to search
