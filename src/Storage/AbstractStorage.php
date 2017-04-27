@@ -24,6 +24,7 @@ abstract class AbstractStorage
     const PATIENT_SUMMARY = "PatientSummaryGet";
     const NOTIFICATION_TASK_CREATE = "NotificationTaskCreate";
     const USER_LIST_GET = "UserListGet";
+    const LOGOFF = "LogoffUser";
     const GROUPS_SEARCH = "/groups";
     const INTERGY_CACHE_LIFE = 200;
     const INTERGY_CACHE_SESSION_KEY = "intergy_session_id";
@@ -42,6 +43,7 @@ abstract class AbstractStorage
     protected $sessionId = null;
     protected $userId = null;
     protected $practiceIds = null;
+    protected $auditTrailID = null;
 
     /**
      *  Function that initializes the info required by the request to Intergy's API
@@ -103,6 +105,9 @@ abstract class AbstractStorage
                 break;
             case 'user-list-get':
                 $path = self::USER_LIST_GET;
+                break;
+            case 'logoff':
+                $path = self::LOGOFF;
                 break;
             default:
                 $path = self::AUTHENTICATE_USER;
@@ -260,6 +265,61 @@ abstract class AbstractStorage
     }
 
     /**
+     *  Calls specific uri from the Health Language API to do a request
+     * @param   String   $userName          Username use to login
+     * @param   String   $userPassword      Password of the user
+     * @param   String   $licenseId         Lisence required by Intergy
+     * @param   String   $sessionId         Session identifier for the user
+     * @param   String   $userLogon         Indentifier used to logon
+     * @param   String   $applicationName   Name of the application
+     * @return  Object                      Data returned from API ('data' key)
+     */
+    public function logoff()
+    {
+        $uri = null;
+        $queryData = null;
+
+        try
+        {
+            // Get the endpoint URL
+            $uri = $this->getUrl( 'logoff' );
+            // Create the request
+            $queryData = [
+                'UserName' => $this->username,
+                'UserPassword' => $this->password,
+                'Credential' => [
+                    "LicenseID" => $this->licenseId,
+                    "SessionID" => $this->sessionId,
+                    "UserLogon" => $this->userLogon,
+                    "ApplicationName" => $this->applicationName,
+                    "UserMachineName" => "",
+                ],
+                'AuditTrailID'=> $this->auditTrailID,
+            ];
+
+            // Send the request to the endpoint
+            $response = $this->callAPI( 'POST', $uri,$queryData );
+
+            Log::info("User has been logoff successfully from Intergy");
+
+            return $response;
+        }
+        catch ( RequestException $re )
+        {
+            // Log errors
+            Log::error(
+                'Intergy: Call to logoff user failed',
+                [
+                    'uri' => $uri,
+                    "query" => $queryData,
+                    'message' => $re->getMessage()
+                ]
+            );
+            throw new IntergyRequestError( $re->getMessage() );
+        }
+    }
+
+    /**
      * Gets a list of practices for the user
      *
      * @return  Array   List of Practices
@@ -372,6 +432,30 @@ abstract class AbstractStorage
      * @param   Object  $response   Response received from server
      * @return  String              Session Id assigned to the user
      */
+    private function getAuditTrailId( $response )
+    {
+        // Check the parameters
+        if( empty($response) )
+        {
+            throw new MissingParameterException( __FUNCTION__ );
+        }
+
+        // Checks it there is a session error
+        if( !empty($response->ErrorCode) )
+        {
+            throw new IntergyRequestError( $response->ErrorMessage );
+        }
+
+        // Gets the session Id
+        return $response->AuditTrailID;
+    }
+
+    /**
+     * Extract the session id from endpoint's response
+     *
+     * @param   Object  $response   Response received from server
+     * @return  String              Session Id assigned to the user
+     */
     private function getUserId( $response )
     {
         // Check the parameters
@@ -445,7 +529,7 @@ abstract class AbstractStorage
     protected function initSession( $forceToRefresh=false )
     {
         // Checks if we have this query result on cache and return it
-        if( !$forceToRefresh &&
+        /*if( !$forceToRefresh &&
             Cache::has( self::INTERGY_CACHE_SESSION_KEY ) &&
             Cache::has( self::INTERGY_CACHE_USER_ID_KEY ) &&
             Cache::has( self::INTERGY_CACHE_PRACTICE_ID_KEY )
@@ -455,7 +539,7 @@ abstract class AbstractStorage
             $this->userId = Cache::get( self::INTERGY_CACHE_USER_ID_KEY );
             $this->practiceIds = Cache::get( self::INTERGY_CACHE_PRACTICE_ID_KEY );
             return;
-        }
+        }*/
 
         // Autheticate the user
         $response = $this->authenticateUser(
@@ -469,18 +553,20 @@ abstract class AbstractStorage
 
         // Get the session Id
         $this->sessionId = $this->getSessionId( $response );
+        // Get the audit trail id
+        $this->auditTrailID = $this->getAuditTrailId( $response );
         // Saves the result into cache
-        Cache::put( self::INTERGY_CACHE_SESSION_KEY, $this->sessionId, self::INTERGY_CACHE_LIFE );
+        //Cache::put( self::INTERGY_CACHE_SESSION_KEY, $this->sessionId, self::INTERGY_CACHE_LIFE );
         // Get the user Id
         $this->userId = $this->getUserId( $response );
         // Saves the result into cache
-        Cache::put( self::INTERGY_CACHE_USER_ID_KEY, $this->userId, self::INTERGY_CACHE_LIFE );
+        //Cache::put( self::INTERGY_CACHE_USER_ID_KEY, $this->userId, self::INTERGY_CACHE_LIFE );
 
         // Get the list of practices
         $response = $this->listPractices();
         $this->practiceIds = $this->getPracticeIds( $response );
 
         // Saves the result into cache
-        Cache::put( self::INTERGY_CACHE_PRACTICE_ID_KEY, $this->practiceIds, self::INTERGY_CACHE_LIFE );
+        //Cache::put( self::INTERGY_CACHE_PRACTICE_ID_KEY, $this->practiceIds, self::INTERGY_CACHE_LIFE );
     }
 }
